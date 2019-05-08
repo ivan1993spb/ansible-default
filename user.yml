@@ -1,0 +1,42 @@
+---
+
+- hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Enable NOPASSWD option
+      lineinfile:
+        path: /etc/sudoers
+        regexp: "^%wheel"
+        line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+        validate: "visudo -cf %s"
+
+    - name: Create user
+      user:
+        name: "{{ user }}"
+        append: yes
+        groups: wheel
+        state: present
+        shell: /bin/bash
+      register: result_user
+
+    - name: Create .ssh directory
+      file:
+        path: "{{ result_user.home }}/.ssh"
+        owner: "{{ result_user.name }}"
+        group: "{{ result_user.group }}"
+        state: directory
+        mode: 0700
+
+    - lineinfile:
+        path: "{{ result_user.home }}/.ssh/authorized_keys"
+        line: "{{ item }}"
+        owner: "{{ result_user.name }}"
+        group: "{{ result_user.name }}"
+        state: present
+        mode: 0600
+        create: yes
+      with_items:
+        - "{{ authorized_keys | default([]) }}"
+      no_log: yes
+

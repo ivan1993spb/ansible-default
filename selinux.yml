@@ -1,0 +1,18 @@
+---
+
+- hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+    # Disable SELinux and restart
+    - lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX=disabled'
+      register: result_selinux_disabled
+      when: ansible_distribution == 'CentOS'
+    - name: Restart server
+      command: /usr/bin/systemd-run --on-active=10 /usr/bin/systemctl reboot
+      async: 0
+      poll: 0
+      when: result_selinux_disabled.changed

@@ -1,0 +1,35 @@
+---
+
+- hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+
+    - name: Check if firewalld package is installed (on RHEL).
+      command: yum list installed firewalld
+      args:
+        warn: false
+      register: firewalld_installed
+      ignore_errors: true
+      changed_when: false
+      when:
+        - ansible_os_family == "RedHat"
+      check_mode: false
+
+    - name: Disable the firewalld service (on RHEL, if configured).
+      service:
+        name: firewalld
+        state: stopped
+        enabled: false
+      when:
+        - ansible_os_family == "RedHat"
+        - firewalld_installed.rc == 0
+
+    - name: Ensure iptables is present.
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - iptables
+        - iptables-services
+

@@ -1,0 +1,37 @@
+---
+
+- name: install common tools
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - vim
+    - htop
+    - make
+    - net-tools
+    - tree
+    - rsync
+    - curl
+    - wget
+    - bridge-utils
+    - git
+    - mc
+
+- name: install common tools for debian
+  apt:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - dnsutils
+    - netcat
+  when: ansible_distribution == 'Debian'
+
+- name: install common tools for centos
+  yum:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - bind-utils
+    - nc
+    - telnet
+  when: ansible_distribution == 'CentOS'

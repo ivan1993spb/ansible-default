@@ -1,0 +1,30 @@
+---
+
+- hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+
+    - name: Disable permit root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#?PermitRootLogin"
+        line: "PermitRootLogin no"
+      when: sshd_disable_permit_root_login | default(False)
+      register: result_lineinfile_prl
+
+    - name: Setup sshd port
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#?Port"
+        line: "Port {{ sshd_port }}"
+      when: sshd_port is defined
+      register: result_lineinfile_port
+
+    - name: Restart ssh daemon
+      service:
+        name: sshd
+        state: restarted
+        enabled: yes
+      when: result_lineinfile_prl.changed or result_lineinfile_port.changed
+

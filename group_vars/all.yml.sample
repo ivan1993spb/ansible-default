@@ -1,0 +1,12 @@
+---
+
+# User to create
+user: username
+
+# Disable root login
+#sshd_disable_permit_root_login: True
+# Set up ssh port
+#sshd_port: 7887
+
+# List of public keys
+authorized_keys: []
