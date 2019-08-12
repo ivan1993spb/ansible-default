@@ -38,6 +38,7 @@ ansible-playbook -i inventories \
     roles.yml \
     iptables.yml \
     common.yml \
+    python.yml \
     user.yml \
     ssh.yml
 
