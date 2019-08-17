@@ -1,5 +1,6 @@
 *.retry
 *.swp
+*.patch
 inventories
 group_vars/*
 !group_vars/all.yml.sample

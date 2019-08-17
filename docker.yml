@@ -1,0 +1,11 @@
+---
+
+# Install docker
+- hosts: all
+  gather_facts: true
+  become: true
+  vars:
+    docker_edition: 'ce'
+    docker_install_compose: true
+  roles:
+    - geerlingguy.ansible-role-docker
