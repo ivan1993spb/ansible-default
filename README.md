@@ -40,8 +40,8 @@ ansible-playbook -i inventories \
     common.yml \
     python.yml \
     user.yml \
-    ssh.yml \
-    docker.yml
+    docker.yml \
+    ssh.yml
 
 # Run the playbook without inventories file
 ansible-playbook -u root -k  -i '192.168.61.1,' selinux.yml
