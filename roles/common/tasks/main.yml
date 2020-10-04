@@ -2,3 +2,11 @@
 
 - import_tasks: packages.yml
 - import_tasks: tools.yml
+
+- copy:
+    content: |
+      export HISTTIMEFORMAT="%d/%m/%y %T "
+    dest: /etc/profile.d/bash_history.sh
+    owner: root
+    group: root
+    mode: 0644
